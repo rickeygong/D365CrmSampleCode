@@ -63,7 +63,8 @@
                     const reader = new FileReader();
                     reader.onload = (e) => {
                         let fileName = file.raw.name;
-                        let fileBase64 = e.target.result;
+                        let fileBase64 = that.stripBase64Prefix(e.target.result);
+                        //console.log(fileBase64);
                         let parameters = {};
                         parameters.fileBase64 = fileBase64;
                         parameters.recordGuid = this.locationDataParam.currentRecordId;
@@ -92,7 +93,8 @@
                             } else {
                                 this.$message({
                                     message: result.msg,
-                                    type: "error"
+                                    type: "error",
+                                    duration: 3000
                                 });
                             }
                         });
@@ -115,7 +117,8 @@
                                 callback(null, response);  // 使用回调处理结果
                             } else {
                                 //callback(new Error("Error " + this.status + ": " + this.statusText), null);
-                                callback(new Error("Error " + this.status + ": " + req.statusText), null);
+                                let errorText = req.statusText || "Unknown error occurred";
+                                callback(new Error("Error " + this.status + ": " + errorText), null);
                             }
                         }
                     };
@@ -132,6 +135,15 @@
                     }
                     return subgridControl;
                 },
+                stripBase64Prefix(base64Data) {
+                    // 查找逗号，这通常是编码数据开始的地方
+                    var base64StartIndex = base64Data.indexOf('base64,') + 'base64,'.length;
+                    if (base64StartIndex < 'base64,'.length) {
+                        return null; // 如果没有找到"base64,"，则返回null
+                    }
+                    // 返回逗号之后的所有字符，即实际的Base64编码数据
+                    return base64Data.substring(base64StartIndex);
+                }
             },
         });
         app.use(ElementPlus);
