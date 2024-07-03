@@ -1,0 +1,142 @@
+<html>
+
+<head>
+    <title>Import details</title>
+    <link href="../lib/element-plus.css" rel="stylesheet" />
+    <script src="../lib/vue3.js"></script>
+    <script src="../lib/element-plus.js"></script>
+</head>
+
+<body>
+    <div id="app">
+        <el-upload class="upload-demo" :drag="true" :multiple="false" :show-file-list="false" :auto-upload="false"
+            @change="handleFileChange" v-loading="loading">
+            <div class="el-upload__text">
+                Drop file here or <em>click to upload</em>
+            </div>
+        </el-upload>
+    </div>
+
+    <script>
+        const { createApp, ref } = Vue;
+        const app = createApp({
+            data() {
+                return {
+                    loading: false,
+                    locationDataParam: {
+                        CurrentRecordId: "",
+                        CurrentEntityLogicalName: "",
+                        CurrentEntityObjTypeCode: "",
+                        OrgLCID: "",
+                        UserLCID: "",
+                    },
+                    subgridName: "",
+                };
+            },
+            created() {
+                this.init();
+            },
+            methods: {
+                init() {
+                    let params = JSON.parse(this.getUrlParameters().data);
+                    this.locationDataParam.currentRecordId = params.recordGuid;
+                    this.locationDataParam.CurrentEntityLogicalName = params.entityName;
+                    this.subgridName = params.subgridName;
+                },
+                getUrlParameters() {
+                    let queryString = location.search.substring(1);
+                    let params = {};
+                    let queryStringParts = queryString.split("&");
+                    for (var i = 0; i < queryStringParts.length; i++) {
+                        var pieces = queryStringParts[i].split("=");
+                        params[pieces[0].toLowerCase()] =
+                            pieces.length === 1 ? null : decodeURIComponent(pieces[1]);
+                    }
+                    return params;
+                },
+                handleFileChange(file, fileList) {
+                    let that = this;
+                    if (!file.raw) {
+                        return;
+                    }
+                    this.loading = true; // 开始加载
+                    const reader = new FileReader();
+                    reader.onload = (e) => {
+                        let fileName = file.raw.name;
+                        let fileBase64 = e.target.result;
+                        let parameters = {};
+                        parameters.fileBase64 = fileBase64;
+                        parameters.recordGuid = this.locationDataParam.currentRecordId;
+                        parameters.entityName = this.locationDataParam.CurrentEntityLogicalName;
+                        this.callAction("gdh_Import_detail_use_MiniExcel", parameters, (err, result) => {
+                            this.loading = false;
+                            if (err) {
+                                this.$message({
+                                    message: err.message,
+                                    type: "error",
+                                    duration: 3000
+                                });
+                            } else if (result.state == "0") {
+                                this.$message({
+                                    message: "已批量创建完成",
+                                    type: "success",
+                                    duration: 3000
+                                });
+
+                                // Update subgrid
+                                let subgridControl = that.getSubGridControl(window, that.subgridName);
+                                if (subgridControl) {
+                                    subgridControl.refresh();
+                                }
+
+                            } else {
+                                this.$message({
+                                    message: result.msg,
+                                    type: "error"
+                                });
+                            }
+                        });
+                    };
+                    reader.readAsDataURL(file.raw);
+                },
+                callAction(action, data, callback) {
+                    var serverURL = window.parent.Xrm.Page.context.getClientUrl();
+                    var req = new XMLHttpRequest();
+                    req.open("POST", serverURL + "/api/data/v9.2/" + action, true);  // 使用异步请求
+                    req.setRequestHeader("Accept", "application/json");
+                    req.setRequestHeader("Content-Type", "application/json; charset=utf-8");
+                    req.setRequestHeader("OData-MaxVersion", "4.0");
+                    req.setRequestHeader("OData-Version", "4.0");
+                    req.onreadystatechange = function () {
+                        if (this.readyState == 4) {
+                            req.onreadystatechange = null;
+                            if (this.status == 200) {
+                                var response = JSON.parse(this.responseText);
+                                callback(null, response);  // 使用回调处理结果
+                            } else {
+                                //callback(new Error("Error " + this.status + ": " + this.statusText), null);
+                                callback(new Error("Error " + this.status + ": " + req.statusText), null);
+                            }
+                        }
+                    };
+                    req.send(JSON.stringify(data));
+                },
+                getSubGridControl(window, subgridName) {
+                    let subgridControl = null;
+                    for (let index = 0; index < window.parent.length; index++) {
+                        let control = window.parent[index].Xrm.Page.getControl(subgridName);
+                        if (control) {
+                            subgridControl = control;
+                            break;
+                        }
+                    }
+                    return subgridControl;
+                },
+            },
+        });
+        app.use(ElementPlus);
+        app.mount("#app");
+    </script>
+</body>
+
+</html>
