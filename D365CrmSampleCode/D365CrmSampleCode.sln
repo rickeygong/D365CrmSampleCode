@@ -1,0 +1,50 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.8.34525.116
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "D365CrmSampleCode.MiniExcelSamplePlugin", "D365CrmSampleCode.MiniExcelSamplePlugin\D365CrmSampleCode.MiniExcelSamplePlugin.csproj", "{B63434ED-617F-4D0C-8AE8-2ACA88955D19}"
+EndProject
+Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "D365CrmSampleCode.WebResource", "D365CrmSampleCode.WebResource\", "{CF560166-D89F-4F79-8B67-CCA0EF51D7D2}"
+	ProjectSection(WebsiteProperties) = preProject
+		TargetFrameworkMoniker = ".NETFramework,Version%3Dv4.6.2"
+		Debug.AspNetCompiler.VirtualPath = "/localhost_62422"
+		Debug.AspNetCompiler.PhysicalPath = "D365CrmSampleCode.WebResource\"
+		Debug.AspNetCompiler.TargetPath = "PrecompiledWeb\localhost_62422\"
+		Debug.AspNetCompiler.Updateable = "true"
+		Debug.AspNetCompiler.ForceOverwrite = "true"
+		Debug.AspNetCompiler.FixedNames = "false"
+		Debug.AspNetCompiler.Debug = "True"
+		Release.AspNetCompiler.VirtualPath = "/localhost_62422"
+		Release.AspNetCompiler.PhysicalPath = "D365CrmSampleCode.WebResource\"
+		Release.AspNetCompiler.TargetPath = "PrecompiledWeb\localhost_62422\"
+		Release.AspNetCompiler.Updateable = "true"
+		Release.AspNetCompiler.ForceOverwrite = "true"
+		Release.AspNetCompiler.FixedNames = "false"
+		Release.AspNetCompiler.Debug = "False"
+		VWDPort = "62422"
+		DefaultWebSiteLanguage = "Visual C#"
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{B63434ED-617F-4D0C-8AE8-2ACA88955D19}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B63434ED-617F-4D0C-8AE8-2ACA88955D19}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B63434ED-617F-4D0C-8AE8-2ACA88955D19}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B63434ED-617F-4D0C-8AE8-2ACA88955D19}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CF560166-D89F-4F79-8B67-CCA0EF51D7D2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CF560166-D89F-4F79-8B67-CCA0EF51D7D2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CF560166-D89F-4F79-8B67-CCA0EF51D7D2}.Release|Any CPU.ActiveCfg = Debug|Any CPU
+		{CF560166-D89F-4F79-8B67-CCA0EF51D7D2}.Release|Any CPU.Build.0 = Debug|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {11348BB2-3737-4775-8948-7E194570E0E1}
+	EndGlobalSection
+EndGlobal
