@@ -63,41 +63,48 @@
                     const reader = new FileReader();
                     reader.onload = (e) => {
                         let fileName = file.raw.name;
-                        let fileBase64 = that.stripBase64Prefix(e.target.result);
-                        //console.log(fileBase64);
-                        let parameters = {};
-                        parameters.fileBase64 = fileBase64;
-                        parameters.recordGuid = this.locationDataParam.currentRecordId;
-                        parameters.entityName = this.locationDataParam.CurrentEntityLogicalName;
-                        this.callAction("gdh_Import_detail_use_MiniExcel", parameters, (err, result) => {
+                        if (!fileName.toLocaleLowerCase().endsWith("xlsx")) {
                             this.loading = false;
-                            if (err) {
-                                this.$message({
-                                    message: err.message,
-                                    type: "error",
-                                    duration: 3000
-                                });
-                            } else if (result.state == "0") {
-                                this.$message({
-                                    message: "已批量创建完成",
-                                    type: "success",
-                                    duration: 3000
-                                });
+                            this.$message({
+                                message: "该文件不是Excel (.xlsx)文件",
+                                type: "error",
+                                duration: 3000
+                            });
+                        } else {
+                            let fileBase64 = that.stripBase64Prefix(e.target.result);
+                            let parameters = {};
+                            parameters.fileBase64 = fileBase64;
+                            parameters.recordGuid = this.locationDataParam.currentRecordId;
+                            parameters.entityName = this.locationDataParam.CurrentEntityLogicalName;
+                            this.callAction("gdh_Import_detail_use_MiniExcel", parameters, (err, result) => {
+                                this.loading = false;
+                                if (err) {
+                                    this.$message({
+                                        message: err.message,
+                                        type: "error",
+                                        duration: 3000
+                                    });
+                                } else if (result.state == "0") {
+                                    this.$message({
+                                        message: "已批量创建完成",
+                                        type: "success",
+                                        duration: 3000
+                                    });
 
-                                // Update subgrid
-                                let subgridControl = that.getSubGridControl(window, that.subgridName);
-                                if (subgridControl) {
-                                    subgridControl.refresh();
+                                    let subgridControl = that.getSubGridControl(window, that.subgridName);
+                                    if (subgridControl) {
+                                        subgridControl.refresh();
+                                    }
+
+                                } else {
+                                    this.$message({
+                                        message: result.msg,
+                                        type: "error",
+                                        duration: 3000
+                                    });
                                 }
-
-                            } else {
-                                this.$message({
-                                    message: result.msg,
-                                    type: "error",
-                                    duration: 3000
-                                });
-                            }
-                        });
+                            });
+                        }
                     };
                     reader.readAsDataURL(file.raw);
                 },
